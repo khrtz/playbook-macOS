@@ -11,6 +11,8 @@
       - sanemat/font
     homebrew_packages:
       - { name: readline }
+      - { name: libtool}
+      - { name: zlib}
       - { name: openssl }
       - { name: openssl, state: linked, install_options: force }
       - { name: python }
@@ -35,7 +37,6 @@
       - { name: hub }
       - { name: tig }
       - { name: fish }
-      - { name: rvm }
       - { name: ruby-build }
       - { name: tofrodos }
       - { name: lha }
@@ -61,6 +62,7 @@
       - { name: emacs }
       - { name: iterm2 }
       - { name: firefox }
+      - { name: sketch }
       - { name: google-chrome }
       - { name: java }
       - { name: slack }
@@ -72,7 +74,6 @@
       - { name: skitch }
       - { name: seashore }
       - { name: atom }
-      - { name: kobito }
       - { name: webstorm }
       - { name: vagrant }
       - { name: virtualbox }
@@ -130,21 +131,42 @@
       shell: brew cask info {{ item }} > cask_info/{{ item }}
       with_items: cask_result.results | selectattr('changed') | map(attribute='item') | map(attribute='name') | list
 
-    # oh-my-zsh
-    - name: oh-my-zsh のインストール
-      shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
-      args:
-        creates: ~/.oh-my-zsh/
+    # # install RVM and Ruby
+    # - name: install rvm
+    #   shell: curl -sSL https://get.rvm.io | bash -s stable  creates=/home/bacchi/.rvm/LICENCE
+    #   sudo_user: bacchi
+    #   changed_when: False
+    #
+    # - name: check ruby version
+    #   command: /bin/bash -l -c "which ruby"
+    #   register: ruby_version_check
+    #   changed_when: '"/home/bacchi/.rvm/rubies/ruby-{{ ruby_version }}/bin/ruby" not in ruby_version_check.stdout'
+    #   sudo_user: bacchi
+    #   ignore_errors: yes
+    #   always_run: yes
+    #
+    # - name: install ruby
+    #   command: /bin/bash -l -c "rvm install {{ ruby_version }} && rvm --default {{ ruby_version }}"
+    #   sudo_user: bacchi
+    #   when: ruby_version_check|changed
+    #   notify:
+    #     - rvm_cleanup
+
+    # # oh-my-zsh
+    # - name: oh-my-zsh のインストール
+    #   shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+    #   args:
+    #     creates: ~/.oh-my-zsh/
 
     # mas で AppStore のアプリをインストールする
     # 大容量ファイルのダウンロード等、時間がかかるタスクなので、本タスクを実行したい場合は明示的に
     # -e "thorough=true" を指定する
     # 例: ansible-playbook localhost.yaml -e 'thorough=true'
-    - name: install appstore applications
-      command: appstore install "{{ item.id }}"
-      with_items: mas
-      when: thorough == "true"
-
-  handlers:
-    - name: run fc-cache
-      shell: fc-cache -vf
+  #   - name: install appstore applications
+  #     command: appstore install "{{ item.id }}"
+  #     with_items: appstore
+  #     when: thorough == "true"
+  #
+  # handlers:
+  #   - name: run fc-cache
+  #     shell: fc-cache -vf
