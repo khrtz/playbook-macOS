@@ -1,0 +1,19 @@
+- name: Checkout my dotfiles
+  git:
+    repo: https://github.com/khrtz/dotfile.git
+    dest: ~/dotfile
+
+- name: Create symlinks
+  file:
+    src: ~/dotfile/{{ item }}
+    dest: ~/{{ item }}
+    state: link
+    force: yes
+  with_items:
+    - .zshrc
+    - .gitconfig
+    - .gitignore
+    - .vimrc
+    - .vim
+    - .bashrc
+    - .bash_profile
