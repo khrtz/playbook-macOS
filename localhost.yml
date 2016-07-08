@@ -19,6 +19,7 @@
       - { name: ansible }
       - { name: coreutils }
       - { name: git }
+      - { name: rbenv }
       - { name: zsh, install_options: disable-etcdir }
       - { name: wget }
       - { name: curl }
